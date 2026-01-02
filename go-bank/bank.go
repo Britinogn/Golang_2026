@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const accountBalanceFile = "balance.txt"
+const accountBalanceFile = "output/balance.txt"
 
 func getBalanceFromFile() (float64, error) {
 	data , err := os.ReadFile(accountBalanceFile)
@@ -26,15 +26,33 @@ func getBalanceFromFile() (float64, error) {
 	return balance, nil
 }
 
-func writeBalanceToFile(balance float64){
-	balanceText := fmt.Sprint(balance)
-	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
+// func writeBalanceToFile(balance float64){
+// 	balanceText := fmt.Sprint(balance)
+// 	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
 
+// 	if err != nil {
+// 		fmt.Println("ERROR writing to file:", err)
+// 	} else {
+// 		fmt.Println("Successfully wrote balance to file")
+// 	}
+// }
+
+func writeBalanceToFile(balance float64){
+	err := os.MkdirAll("output", 0755)
+	if err != nil{
+		fmt.Println("ERROR writing to file:", err)
+		return
+	}
+
+	balanceText := fmt.Sprint(balance)
+
+	err = os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
 	if err != nil {
 		fmt.Println("ERROR writing to file:", err)
-	} else {
-		fmt.Println("Successfully wrote balance to file")
+		return
 	}
+
+	fmt.Println("Successfully wrote result to file")
 }
 
 //0644 ; this helps with file permission
@@ -49,7 +67,7 @@ func main() {
 		fmt.Println("-----")
 		//return
 		//panic function
-		panic("Can't continue , sorry")
+		//panic("Can't continue , sorry")
 	}
 
 	fmt.Println("Welcome to Go Bank")
