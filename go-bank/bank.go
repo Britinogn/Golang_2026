@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -8,24 +9,49 @@ import (
 
 const accountBalanceFile = "balance.txt"
 
-func getBalanceFromFile() float64 {
-	data , _ := os.ReadFile(accountBalanceFile)
+func getBalanceFromFile() (float64, error) {
+	data , err := os.ReadFile(accountBalanceFile)
+
+	if err != nil{
+		return 1000 , errors.New("Failed to find balance file")
+	}
+
 	balanceText := string(data)
-	balance , _ := strconv.ParseFloat(balanceText, 64)
-	return balance
+	balance , err := strconv.ParseFloat(balanceText, 64)
+
+	if err != nil{
+		return 1000 , errors.New("Failed to parse stored balance value")
+	}
+
+	return balance, nil
 }
 
 func writeBalanceToFile(balance float64){
 	balanceText := fmt.Sprint(balance)
-	os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
+	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
+
+	if err != nil {
+		fmt.Println("ERROR writing to file:", err)
+	} else {
+		fmt.Println("Successfully wrote balance to file")
+	}
 }
 
 //0644 ; this helps with file permission
 
 func main() {
 	//we shouldn't store the account balance in numbers , we will be using file
-	var accountBalance = getBalanceFromFile()
-	
+	var accountBalance, err = getBalanceFromFile()
+
+	if err != nil{
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		fmt.Println("-----")
+		//return
+		//panic function
+		panic("Can't continue , sorry")
+	}
+
 	fmt.Println("Welcome to Go Bank")
 
 	// for key word for looping 
