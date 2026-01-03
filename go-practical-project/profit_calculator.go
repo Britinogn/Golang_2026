@@ -24,16 +24,19 @@ func main() {
 	revenue , err := getUserInput("Revenue: ")
 	if err != nil{
 		fmt.Println(err)
+		return
 	}
 
 	expenses , err := getUserInput("Expenses: ")
 	if err != nil{
 		fmt.Println(err)
+		return
 	}
 
 	taxRate , err := getUserInput("Tax Rate: ")
 	if err != nil{
 		fmt.Println(err)
+		return
 	}
 
 	// var validateUserInput int
@@ -47,14 +50,14 @@ func main() {
 
 	fmt.Print(formattedEBT,formattedP,formattedR)
 
-	writeResultToFile(ebt,profit,ratio)
+	storeResult(ebt,profit,ratio)
 	// fmt.Printf("%.1f\n", ebt)
 	// fmt.Printf("%.1f\n",profit)
 	// fmt.Printf("%.3f\n",ratio)
 
 }
 
-func writeResultToFile(ebt, profit, ratio float64) {
+func storeResult(ebt, profit, ratio float64) {
 	err := os.MkdirAll("output", 0755)
 	if err != nil {
 		fmt.Println("ERROR creating folder:", err)

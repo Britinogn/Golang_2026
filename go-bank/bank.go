@@ -1,65 +1,17 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"example.com/bank/fileops"
+	"github.com/Pallinder/go-randomdata"
 )
 
 const accountBalanceFile = "output/balance.txt"
 
-func getBalanceFromFile() (float64, error) {
-	data , err := os.ReadFile(accountBalanceFile)
-
-	if err != nil{
-		return 1000 , errors.New("Failed to find balance file")
-	}
-
-	balanceText := string(data)
-	balance , err := strconv.ParseFloat(balanceText, 64)
-
-	if err != nil{
-		return 1000 , errors.New("Failed to parse stored balance value")
-	}
-
-	return balance, nil
-}
-
-// func writeBalanceToFile(balance float64){
-// 	balanceText := fmt.Sprint(balance)
-// 	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-
-// 	if err != nil {
-// 		fmt.Println("ERROR writing to file:", err)
-// 	} else {
-// 		fmt.Println("Successfully wrote balance to file")
-// 	}
-// }
-
-func writeBalanceToFile(balance float64){
-	err := os.MkdirAll("output", 0755)
-	if err != nil{
-		fmt.Println("ERROR writing to file:", err)
-		return
-	}
-
-	balanceText := fmt.Sprint(balance)
-
-	err = os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-	if err != nil {
-		fmt.Println("ERROR writing to file:", err)
-		return
-	}
-
-	fmt.Println("Successfully wrote result to file")
-}
-
-//0644 ; this helps with file permission
-
 func main() {
 	//we shouldn't store the account balance in numbers , we will be using file
-	var accountBalance, err = getBalanceFromFile()
+	var accountBalance, err = fileops.GetFloatFromFile(accountBalanceFile)
 
 	if err != nil{
 		fmt.Println("ERROR")
@@ -71,15 +23,12 @@ func main() {
 	}
 
 	fmt.Println("Welcome to Go Bank")
+	fmt.Println("Your number", randomdata.PhoneNumber(), "has been verified")
 
 	// for key word for looping 
 	for {
 		
-		fmt.Println("what do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
+		presentOptions()
 
 		var choice int
 		fmt.Print("Your choice " )
@@ -104,7 +53,7 @@ func main() {
 
 				accountBalance += depositAmount  //accountBalance += accountBalance + depositAmount
 				fmt.Println("Balance updated! New amount:", accountBalance)
-				writeBalanceToFile(accountBalance)
+				fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 
 			case 3:
 				fmt.Print("Withdrawal amount: ")
@@ -122,7 +71,7 @@ func main() {
 				}
 				accountBalance -= withdrawAmount
 				fmt.Println("Money Withdraw! New amount:", accountBalance)
-				writeBalanceToFile(accountBalance)
+				fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 				
 			default:
 				fmt.Println("Goodbye!")
@@ -132,3 +81,4 @@ func main() {
 		}	
 	}
 }
+
